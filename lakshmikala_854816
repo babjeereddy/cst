@@ -1,0 +1,57 @@
+1.WRITE A QUERY TO DISPLAY THE MEMBER ID,MEMBER NAME,CITY AND MEMBERSHIP STTUS WHO ARE ALL HAVING LIFE TIME MEMBERSHIP. hint: life time membership status is "permanent".
+
+select member_id,member_name,city,membership_status
+from lms_members
+where membership_status='permanent';
+
+
+2:write a query to display the book code,publication,price and supplier name of the book which is taken frequently.
+
+SELECT b1.book_code,b2.publication,b2.price,b3.supplier_name 
+FROM(SELECT b1.book_code 
+FROM LMS_BOOK_ISSUE b1 
+GROUP BY book_code
+ HAVING COUNT(b1.BOOK_CODE) > 1) b1 JOIN LMS_BOOK_DETAILS b2 ON b1.book_code = b2.book_code JOIN LMS_SUPPLIERS_DETAILS b3 ON b2.supplier_id = b3.supplier_id;
+ 
+ 
+ 3:Write a query to display the member id, member name who have taken the book with book code 'BL000002'
+ 
+ select b1. member_id,b1.member_name,b2.book_code from LMS_MEMBERS b1,LMS_BOOK_ISSUE b2 where b2.BOOK_CODE='BL000002';
+
+
+4:Write a query to display the book code, book title and author of the books whose author name begins with 'P'.
+
+ select book_code,book_title,author from LMS_BOOK_DETAILS where AUTHOR like 'P%';
+ 
+5:Write a query to display the total number of Java books available in library with alias name ‘NO_OF_BOOKS’.
+
+ select COUNT(category)as NO_OF_BOOKS from LMS_BOOK_DETAILS where CATEGORY='JAVA';
+ 
+6: Write a query to list the category and number of books in each category with alias name ‘NO_OF_BOOKS’.
+
+ select category,COUNT(category)as NO_OF_BOOKS from LMS_BOOK_DETAILS group by CATEGORY;
+
+7: write a query to display the member id,member name of the members,book code and book title of the books taken by them.
+
+select b1.member_id,b1.member_name,b2.book_code,b2.book_title
+from  lms_members b1,lms_book_details b2;
+
+8:write a query to display the total number of  books available in library with alias name ‘NO_OF_BOOKS_available’.
+
+SELECT COUNT(a.BOOK_CODE)AS NO_OF_BOOKS_AVAILABLE
+ FROM LMS_BOOK_DETAILS a LEFT JOIN LMS_BOOK_ISSUE b
+ ON a.BOOK_CODE = b.BOOK_CODE WHERE b.BOOK_CODE IS NULL;
+
+9:write a query to display the memeber id,member_name,fine_range and fine_amount of the members whose fine_amount is less than 1000
+
+select b1.member_id,b1.member_name,b2.fine_range,b2.fine_amount
+    from lms_members b1,lms_fine_details b2
+   where b2.fine_amount<=100;
+   
+10: write a query to display the book_code,book_title,publisher,edition,price and year of publication and sort based on year of publication,publisher and edition
+
+
+ select S.SUPPLIER_ID,SUPPLIER_NAME
+ from LMS_BOOK_DETAILS B inner join LMS_SUPPLIERS_DETAILS S on B.SUPPLIER_ID = S.SUPPLIER_ID
+ where S.SUPPLIER_ID in (select SUPPLIER_ID from LMS_BOOK_DETAILS group by SUPPLIER_ID having
+ COUNT(SUPPLIER_ID)=(select MIN(cnt) from (select COUNT(*) as cnt from LMS_BOOK_DETAILS group by SUPPLIER_ID)as T))
